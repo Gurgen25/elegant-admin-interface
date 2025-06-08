@@ -83,21 +83,21 @@ const Index = () => {
       case "dashboard":
         return <DashboardOverview />;
       case "products":
-        return <ProductsManagement searchQuery={globalSearchQuery} />;
+        return <ProductsManagement />;
       case "orders":
-        return <OrdersManagement searchQuery={globalSearchQuery} />;
+        return <OrdersManagement />;
       case "customers":
-        return <CustomersManagement searchQuery={globalSearchQuery} />;
+        return <CustomersManagement />;
       case "payments":
-        return <PaymentsManagement searchQuery={globalSearchQuery} />;
+        return <PaymentsManagement />;
       case "users":
-        return <UsersManagement searchQuery={globalSearchQuery} />;
+        return <UsersManagement />;
       case "feedback":
-        return <FeedbackManagement searchQuery={globalSearchQuery} />;
+        return <FeedbackManagement />;
       case "admins":
-        return <AdminsManagement searchQuery={globalSearchQuery} />;
+        return <AdminsManagement />;
       case "moderators":
-        return <ModeratorsManagement userRole={userRole} searchQuery={globalSearchQuery} />;
+        return <ModeratorsManagement userRole={userRole} />;
       case "analytics":
         return <Analytics />;
       case "settings":

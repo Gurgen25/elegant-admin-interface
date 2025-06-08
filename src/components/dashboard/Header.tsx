@@ -1,51 +1,114 @@
 
-import { Menu, Search, Bell, User } from "lucide-react";
+import { useState } from "react";
+import { Bell, Search, User, Sun, Moon, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  theme: 'light' | 'dark';
+  setTheme: (theme: 'light' | 'dark') => void;
+  language: string;
+  setLanguage: (language: string) => void;
+  userRole: 'admin' | 'moderator' | 'user';
 }
 
-const Header = ({ sidebarCollapsed, setSidebarCollapsed }: HeaderProps) => {
+const Header = ({ 
+  sidebarCollapsed, 
+  setSidebarCollapsed, 
+  theme, 
+  setTheme, 
+  language, 
+  setLanguage,
+  userRole 
+}: HeaderProps) => {
+  const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' },
+    { code: 'fr', name: 'Français' },
+    { code: 'de', name: 'Deutsch' },
+  ];
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-          
-          <div className="relative max-w-md">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search..."
-              className="pl-10 w-80 bg-gray-50 border-0 focus:bg-white"
+              className="pl-10 w-80 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
             />
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="sm" className="relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            className="p-2"
+          >
+            {theme === 'light' ? (
+              <Moon className="h-4 w-4" />
+            ) : (
+              <Sun className="h-4 w-4" />
+            )}
           </Button>
-          
-          <div className="flex items-center space-x-3">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-gray-800">John Doe</p>
-              <p className="text-xs text-gray-500">Administrator</p>
-            </div>
-            <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-white" />
-            </div>
-          </div>
+
+          {/* Language Selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="p-2">
+                <Globe className="h-4 w-4 mr-2" />
+                {language.toUpperCase()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white dark:bg-gray-800">
+              {languages.map((lang) => (
+                <DropdownMenuItem 
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  {lang.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Notifications */}
+          <Button variant="ghost" size="sm" className="relative p-2">
+            <Bell className="h-4 w-4" />
+            <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs"></span>
+          </Button>
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <User className="h-4 w-4" />
+                <span className="text-sm font-medium capitalize">{userRole}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white dark:bg-gray-800">
+              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Profile</DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Settings</DropdownMenuItem>
+              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

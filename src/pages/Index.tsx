@@ -3,6 +3,10 @@ import { useState } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Header from "@/components/dashboard/Header";
 import DashboardOverview from "@/components/dashboard/DashboardOverview";
+import ProductsManagement from "@/components/dashboard/ProductsManagement";
+import OrdersManagement from "@/components/dashboard/OrdersManagement";
+import CustomersManagement from "@/components/dashboard/CustomersManagement";
+import PaymentsManagement from "@/components/dashboard/PaymentsManagement";
 import UsersManagement from "@/components/dashboard/UsersManagement";
 import Analytics from "@/components/dashboard/Analytics";
 import Settings from "@/components/dashboard/Settings";
@@ -15,6 +19,14 @@ const Index = () => {
     switch (activeSection) {
       case "dashboard":
         return <DashboardOverview />;
+      case "products":
+        return <ProductsManagement />;
+      case "orders":
+        return <OrdersManagement />;
+      case "customers":
+        return <CustomersManagement />;
+      case "payments":
+        return <PaymentsManagement />;
       case "users":
         return <UsersManagement />;
       case "analytics":

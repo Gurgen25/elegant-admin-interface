@@ -5,7 +5,11 @@ import {
   BarChart3, 
   Settings, 
   ChevronLeft,
-  Building2
+  Building2,
+  ShoppingCart,
+  Package,
+  CreditCard,
+  UserCheck
 } from "lucide-react";
 
 interface SidebarProps {
@@ -18,6 +22,10 @@ interface SidebarProps {
 const Sidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed }: SidebarProps) => {
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "products", label: "Products", icon: Package },
+    { id: "orders", label: "Orders", icon: ShoppingCart },
+    { id: "customers", label: "Customers", icon: UserCheck },
+    { id: "payments", label: "Payments", icon: CreditCard },
     { id: "users", label: "Users", icon: Users },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
@@ -29,7 +37,7 @@ const Sidebar = ({ activeSection, setActiveSection, collapsed, setCollapsed }: S
         {!collapsed && (
           <div className="flex items-center space-x-2">
             <Building2 className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-800">AdminPro</span>
+            <span className="text-xl font-bold text-gray-800">E-Commerce Admin</span>
           </div>
         )}
         <button

@@ -13,13 +13,17 @@ import AdminsManagement from "@/components/dashboard/AdminsManagement";
 import ModeratorsManagement from "@/components/dashboard/ModeratorsManagement";
 import Analytics from "@/components/dashboard/Analytics";
 import Settings from "@/components/dashboard/Settings";
+import ProfilePage from "@/components/dashboard/ProfilePage";
+import LoginPage from "@/components/auth/LoginPage";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("dashboard");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [language, setLanguage] = useState('en');
-  const [userRole, setUserRole] = useState<'admin' | 'moderator' | 'user'>('admin'); // Can be changed to simulate different roles
+  const [userRole, setUserRole] = useState<'admin' | 'moderator' | 'user'>('admin');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [globalSearchQuery, setGlobalSearchQuery] = useState("");
 
   // Apply theme to document
   useEffect(() => {
@@ -30,34 +34,84 @@ const Index = () => {
     }
   }, [theme]);
 
+  const handleLogin = (email: string, password: string, role: 'admin' | 'moderator' | 'user') => {
+    // Here you would typically validate credentials with your PHP backend
+    console.log("Login attempt:", { email, password, role });
+    
+    setUserRole(role);
+    setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('userRole', role);
+    localStorage.setItem('userEmail', email);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setActiveSection("dashboard");
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userEmail');
+  };
+
+  const handleProfileClick = () => {
+    setActiveSection("profile");
+  };
+
+  const handleSettingsClick = () => {
+    setActiveSection("settings");
+  };
+
+  const handleGlobalSearch = (query: string) => {
+    setGlobalSearchQuery(query);
+    console.log("Global search query:", query);
+    // Here you can implement global search logic across all sections
+  };
+
+  // Check for existing authentication on component mount
+  useEffect(() => {
+    const savedAuth = localStorage.getItem('isAuthenticated');
+    const savedRole = localStorage.getItem('userRole') as 'admin' | 'moderator' | 'user' | null;
+    
+    if (savedAuth === 'true' && savedRole) {
+      setIsAuthenticated(true);
+      setUserRole(savedRole);
+    }
+  }, []);
+
   const renderContent = () => {
     switch (activeSection) {
       case "dashboard":
         return <DashboardOverview />;
       case "products":
-        return <ProductsManagement />;
+        return <ProductsManagement searchQuery={globalSearchQuery} />;
       case "orders":
-        return <OrdersManagement />;
+        return <OrdersManagement searchQuery={globalSearchQuery} />;
       case "customers":
-        return <CustomersManagement />;
+        return <CustomersManagement searchQuery={globalSearchQuery} />;
       case "payments":
-        return <PaymentsManagement />;
+        return <PaymentsManagement searchQuery={globalSearchQuery} />;
       case "users":
-        return <UsersManagement />;
+        return <UsersManagement searchQuery={globalSearchQuery} />;
       case "feedback":
-        return <FeedbackManagement />;
+        return <FeedbackManagement searchQuery={globalSearchQuery} />;
       case "admins":
-        return <AdminsManagement />;
+        return <AdminsManagement searchQuery={globalSearchQuery} />;
       case "moderators":
-        return <ModeratorsManagement userRole={userRole} />;
+        return <ModeratorsManagement userRole={userRole} searchQuery={globalSearchQuery} />;
       case "analytics":
         return <Analytics />;
       case "settings":
         return <Settings />;
+      case "profile":
+        return <ProfilePage userRole={userRole} />;
       default:
         return <DashboardOverview />;
     }
   };
+
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -77,6 +131,10 @@ const Index = () => {
           language={language}
           setLanguage={setLanguage}
           userRole={userRole}
+          onSearch={handleGlobalSearch}
+          onProfileClick={handleProfileClick}
+          onSettingsClick={handleSettingsClick}
+          onLogout={handleLogout}
         />
         <main className="flex-1 overflow-y-auto p-6">
           {renderContent()}

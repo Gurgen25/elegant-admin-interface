@@ -18,6 +18,10 @@ interface HeaderProps {
   language: string;
   setLanguage: (language: string) => void;
   userRole: 'admin' | 'moderator' | 'user';
+  onSearch?: (query: string) => void;
+  onProfileClick?: () => void;
+  onSettingsClick?: () => void;
+  onLogout?: () => void;
 }
 
 const Header = ({ 
@@ -27,8 +31,14 @@ const Header = ({
   setTheme, 
   language, 
   setLanguage,
-  userRole 
+  userRole,
+  onSearch,
+  onProfileClick,
+  onSettingsClick,
+  onLogout
 }: HeaderProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const languages = [
     { code: 'en', name: 'English' },
     { code: 'es', name: 'Español' },
@@ -40,17 +50,34 @@ const Header = ({
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSearch && searchQuery.trim()) {
+      onSearch(searchQuery.trim());
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
+
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search..."
+              placeholder="Search across all sections..."
+              value={searchQuery}
+              onChange={handleSearchChange}
               className="pl-10 w-80 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600"
             />
-          </div>
+          </form>
         </div>
 
         <div className="flex items-center space-x-4">
@@ -104,9 +131,24 @@ const Header = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-white dark:bg-gray-800">
-              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Profile</DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Settings</DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-gray-100 dark:hover:bg-gray-700">Logout</DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={onProfileClick}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={onSettingsClick}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={onLogout}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600"
+              >
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
